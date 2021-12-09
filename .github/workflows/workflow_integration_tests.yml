@@ -1,0 +1,48 @@
+name: test
+# This workflow is triggered on push and PR to master
+on:
+    pull_request:
+      branches:
+        - master
+    push:
+      branches:
+        - master
+        - dev
+
+jobs:
+    testit:
+      timeout-minutes: 10
+      name: Scan and test
+      # This job runs on Linux
+      runs-on: ubuntu-latest
+      steps:
+          - uses: actions/checkout@v2
+          - name: Set up Python
+            uses: actions/setup-python@v2
+            with:
+              python-version: 3.8
+
+          - name: Install Dependencies
+            run: |
+              pip install --upgrade pip
+              pip install pytest pytest-cov tartufo jinja2 click configparser
+
+          - name: Secrets Scan
+            run: tartufo --exclude-paths ./.github/workflows/exclude-patterns.txt scan-local-repo --max-depth 50 .
+
+          - name: Test with pytest
+            run: |
+              pytest docker/unit_tests.py --cov=./fastapi --cov-report=xml
+
+          # Run Code coverage on codecov
+          - name: Code Coverage Integration
+            uses: codecov/codecov-action@v1
+            with:
+              token: ${{ secrets.CODECOV_TOKEN }}
+
+          - name: Generate build number
+            uses: einaregilsson/build-number@v3
+            with:
+              token: ${{secrets.github_token}}        
+          - name: Print new build number
+            run: echo "Build number is $BUILD_NUMBER"

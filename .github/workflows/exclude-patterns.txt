@@ -1,0 +1,4 @@
+# Exclude these file types from being scanned by tartufo
+.*\.html$    
+.*\.css$
+.*\.txt$

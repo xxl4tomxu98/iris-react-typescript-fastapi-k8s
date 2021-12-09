@@ -1,0 +1,13 @@
+uvicorn
+sqlalchemy
+fastapi
+pydantic
+requests
+starlette==0.13.6
+jinja2
+pdoc3
+pyinstrument
+boto3
+python-dotenv
+pytest
+moto

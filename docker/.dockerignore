@@ -1,0 +1,5 @@
+#Ignore the Dockerfile
+Dockerfile
+
+#Ignore the templates folder
+templates/
